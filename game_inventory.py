@@ -1,55 +1,108 @@
 
-# This is the file where you must work.
-# Write code in the functions (and create new functions) so that they work
-# according to the specification.
 
+# The function which display the inventory
 
 def display_inventory(inventory):
-    '''Display the inventory like this:
-    rope: 1
-    torch: 6
-    '''
-    pass
 
+    print("Your inventory contains the following:\n")
+
+    for item in inventory:
+        print(f"{item}:{inventory[item]}")
+
+    print("\n")
+
+
+# The starting inventory
+
+inv = {"arrow": 12, "gold coin": 42, "rope": 1, "torch": 6,
+       "dagger": 1}
+
+
+# Function to add items to the inventory
 
 def add_to_inventory(inventory, added_items):
-    '''Add to the inventory dictionary a list of items from added_items.'''
-    pass
 
+    # create new item in inventory if not present yet
+    for new_item in added_items:
+        if new_item not in inventory:
+            inventory.update({new_item: 0})
+
+    # add items to the inventory
+    for item in inventory:
+        for new_item in dragon_loot:
+            if item == new_item:
+                inventory[item] += 1
+
+
+# new stack of items
+
+dragon_loot = ['gold coin', 'dagger', 'gold coin', 'gold coin', 'ruby']
+
+add_to_inventory(inv, dragon_loot)
+display_inventory(inv)
+
+
+# function which adds all the items and their number in a table
 
 def print_table(inventory, order=None):
-    '''
-    Take your inventory and display it in a well-organized table with
-    each column right-justified like this:
 
-    -----------------
-    item name | count
-    -----------------
-         rope |     1
-        torch |     6
-    -----------------
+   # max_item_n#ame = max(len(it) for it in inv)
 
-    The 'order' parameter (string) works as follows:
-    - None (by default) means the table is unordered
-    - "count,desc" means the table is ordered by count (of items in the
-      inventory) in descending order
-    - "count,asc" means the table is ordered by count in ascending order
-    '''
+    print("-----------------\n")
+    print("item name | count\n")
+    print("-----------------\n")
 
-    pass
+    # sorting values ascending
+    if order == "count, asc":
+        inventory = sorted(inventory.items(), key=lambda count: count[1])
+        inventory = dict(inventory)
 
+    # sorting values descending
+    if order == "count, desc":
+        inventory = sorted(inventory.items(),
+                           key=lambda count: count[1], reverse=True)
+        inventory = dict(inventory)
+
+    # creating the table rows
+    for i, c in inventory.items():
+        print(f"{i:>9} |  {c:>4}\n")
+        # print("".join(i.ljust(max_item_name) for c in i))
+
+    print("-----------------\n")
+
+
+print_table(inv, "count, desc")
+
+
+# function which updates the inventory from a file with items
 
 def import_inventory(inventory, filename="import_inventory.csv"):
-    '''
-    Import new inventory items from a file.
 
-    The filename comes as an argument, but by default it's
-    "import_inventory.csv". The import automatically merges items by name.
+    items_from_file = []
 
-    The file format is plain text with comma separated values (CSV).
-    '''
+    # creating a list of items from the file
+    f = open(filename, "r")
+    file_line = f.readlines()
+    for it in file_line:
+        list_from_file_items = it.split(",")
+        for item in list_from_file_items:
+            items_from_file.append(item)
 
-    pass
+    # if new item is found, add it to the inventory
+    for item_f in items_from_file:
+        if item_f not in inventory:
+            inventory.update({item_f: 0})
+
+    # when item found in list from file, increase it's number in the inventory
+    for item in inventory:
+        for item_f in items_from_file:
+            if item == item_f:
+                inventory[item] += 1
+
+
+import_inventory(inv, "test_inventory.csv")
+
+print_table(inv, "count, desc")
 
 
 def export_inventory(inventory, filename="export_inventory.csv"):
