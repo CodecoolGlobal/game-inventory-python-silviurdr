@@ -1,6 +1,9 @@
 
 
+import csv
+
 # The function which display the inventory
+
 
 def display_inventory(inventory):
 
@@ -100,19 +103,40 @@ def import_inventory(inventory, filename="import_inventory.csv"):
                 inventory[item] += 1
 
 
+# importing new items from the test_inventory file
 import_inventory(inv, "test_inventory.csv")
 
+
+# printing the table with the updated data
 print_table(inv, "count, desc")
 
 
+# creating a list with all the values from the inventory
+list_values_inv = list(inv.values())
+
+# creating a list with all the keys from the inventory
+list_key_inv = list(inv)
+
+
+# functions which exports all the items and values from the inventory to a csv file
+
 def export_inventory(inventory, filename="export_inventory.csv"):
-    '''
-    Export the inventory into a .csv file.
 
-    If the filename argument is None, it creates and overwrites a file
-    called "export_inventory.csv".
+    with open("export_inventory.csv", mode="w") as items_export_file:
 
-    The file format is plain text with comma separated values (CSV).
-    '''
+        # creating template format for the csv file with exported inventory
+        fieldnames = ["item_name", "number_of_items"]
 
-    pass
+        # settings for the file whhere the inventory data is exported
+        items_to_write = csv.DictWriter(
+            items_export_file, fieldnames=fieldnames)
+
+        # loop which creates a row for each item in the inventory
+        i = 0
+        while i < len(list_key_inv):
+            items_to_write.writerow(
+                {"item_name": list_key_inv[i], "number_of_items": list_values_inv[i]})
+            i += 1
+
+
+export_inventory(inv)
